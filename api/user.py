@@ -4,6 +4,7 @@ import hmac
 import jwt
 import threading
 from flask import Blueprint, app, request, jsonify, current_app, Response, g
+from flask_login import logout_user
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime, timedelta
 from __init__ import app, db
@@ -521,7 +522,6 @@ class UserAPI:
                                 path='/',
                                 samesite='Lax'
                             )
-                        print(f"Token set: {token}")
                         return resp 
                     except Exception as e:
                         return {
@@ -579,6 +579,8 @@ class UserAPI:
                         path='/',
                         samesite='Lax'
                     )
+                # The API also accepts Flask-Login sessions; clear both auth methods.
+                logout_user()
                 return resp
             except Exception as e:
                 return {
